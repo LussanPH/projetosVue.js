@@ -1,0 +1,176 @@
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.1.11/chance.min.js"></script>
+<div id="app">
+    <div :class="vidas">
+        <div :class="nomeVida">
+            <p>{{jogador}}</p>
+            <div :class="barra">
+                <div :class="barraVerde" :style="{width: verdeP + '%'}"></div>
+                <div :class="barraVermelha" :style="{width: vermelhoP + '%'}"></div>
+            </div>
+        </div>
+        <div :class="nomeVida">
+            <p>{{monstro}}</p>
+            <div :class="barra">
+                <div :class="barraVerde" :style="{width: verdeM + '%'}"></div>
+                <div :class="barraVermelha" :style="{width: vermelhoM + '%'}"></div>
+            </div>
+        </div>
+    </div>
+    <div :class="botoes">
+        <button :class="botao" :style="cor[0]" @click="ataque" v-show="batalha">Ataque</button>
+        <button :class="botao" :style="cor[1]" @click="ataqueEspecial" v-show="batalha">Ataque Especial</button>
+        <button :class="botao" :style="cor[2]" @click="curar" v-show="batalha">Curar</button>
+        <button :class="botao" :style="cor[3]" @click="batalha=!batalha" v-show="batalha">Desistir</button>
+        <button :class="botao" :style="cor[4]" @click="reiniciar" v-show="!batalha">Novo Jogo</button>
+    </div>
+</div>
+
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    .caixaVidas{
+        margin: 20px auto 0 auto;
+        width: 98%;
+        height: 300px;
+        border: 1px solid grey;
+        box-shadow: 0 0 5px gray;
+        background-color: rgb(235, 235, 235);
+        border-radius: 5px;
+        display: flex;
+    }
+    .caixaBotoes{
+        margin: 20px auto 0 auto;
+        width: 98%;
+        height: 100px;
+        border: 1px solid grey;
+        box-shadow: 0 0 5px gray;
+        background-color: rgb(235, 235, 235);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .barraDeVida{
+        height: 30px;
+        border: 2px solid black;
+        width: 80%;
+        display: flex;
+    }
+    .espaçoNomeVida{
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .botoes{
+        text-align: center;
+        width: 100px;
+        height: 40px;
+        cursor: pointer;
+        border-radius: 5px;
+        color: rgb(255, 255, 255);
+    }
+    .barraVerde{
+        height: 100%;
+        background-color: green;
+    }
+    .barraVermelha{
+        height: 100%;
+        background-color: red;
+    }
+    p{
+        font-size: 40px;
+        margin: 0;
+    }
+</style>
+
+<script>
+    new Vue({
+        el: "#app",
+        data:{
+            vidas: "caixaVidas",
+            botoes: "caixaBotoes",
+            jogador: "Jogador",
+            monstro: "Monstro",
+            barra: "barraDeVida",
+            nomeVida: "espaçoNomeVida",
+            botao: "botoes",
+            cor: ["background-color: red", "background-color: orange", "background-color: green", "background-color: blue", "background-color: gray"],
+            verdeP: 100,
+            vermelhoP: 0,
+            verdeM: 100,
+            vermelhoM: 0,
+            barraVerde: "barraVerde",
+            barraVermelha: "barraVermelha",
+            batalha: true
+        },
+        methods:{
+            ataque: function(){
+                let atk = chance.integer({min:1, max:10})
+                if(atk >= this.verdeM){
+                    this.verdeM = 0
+                    this.vermelhoM = 100
+                }
+                else{
+                    this.verdeM -= atk
+                    this.vermelhoM += atk
+                }
+                let atkM = chance.integer({min:6, max:16})
+                if(atkM >= this.verdeP){
+                    this.verdeP = 0
+                    this.vermelhoP = 100
+                }
+                else{
+                    this.verdeP -= atkM
+                    this.vermelhoP += atkM
+                }
+            },
+            ataqueEspecial: function(){
+                let atk = chance.integer({min:9, max:20})
+                if(atk >= this.verdeM){
+                    this.verdeM = 0
+                    this.vermelhoM = 100
+                }
+                else{
+                    this.verdeM -= atk
+                    this.vermelhoM += atk
+                }
+                let atkM = chance.integer({min:6, max:16})
+                if(atkM >= this.verdeP){
+                    this.verdeP = 0
+                    this.vermelhoP = 100
+                }
+                else{
+                    this.verdeP -= atkM
+                    this.vermelhoP += atkM
+                }
+            },
+            curar: function(){
+                let cura = chance.integer({min:10, max:15})
+                if(this.verdeP < 100){
+                    this.verdeP += cura
+                    this.vermelhoP -= cura
+                }
+                let atkM = chance.integer({min:6, max:16})
+                if(atkM >= this.verdeP){
+                    this.verdeP = 0
+                    this.vermelhoP = 100
+                }
+                else{
+                    this.verdeP -= atkM
+                    this.vermelhoP += atkM
+                }
+            },
+            reiniciar: function(){
+                this.verdeM = 100
+                this.verdeP = 100
+                this.vermelhoM = 0
+                this.vermelhoP = 0
+                this.batalha = !this.batalha
+            }
+        }   
+    })
+</script>
